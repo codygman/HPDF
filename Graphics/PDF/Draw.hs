@@ -179,6 +179,8 @@ instance Applicative Draw where
        a <- unDraw af env
        return $ f a
 
+instance MonadFail Draw where
+  fail message = Draw (\ _ -> fail message)
 
 instance Monad Draw where
     m >>= f  = Draw $ \env -> do
