@@ -107,6 +107,10 @@ import Graphics.PDF.Data.PDFTree(PDFTree)
 import qualified Data.Text as T
 import Graphics.PDF.Fonts.Font(PDFFont(..))
 
+#if __GLASGOW_HASKELL__ < 881
+import Control.Monad.Fail (MonadFail(..))
+#endif
+
 data AnnotationStyle = AnnotationStyle !(Maybe Color)
 
 class AnnotationObject a where
@@ -180,7 +184,7 @@ instance Applicative Draw where
        return $ f a
 
 instance MonadFail Draw where
-  fail message = Draw (\ _ -> fail message)
+  fail message = Draw (\ _ -> Control.Monad.Fail.fail message)
 
 instance Monad Draw where
     m >>= f  = Draw $ \env -> do

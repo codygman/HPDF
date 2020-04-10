@@ -39,6 +39,9 @@ import GlaExts ( Word(..), Int(..), shiftRL# )
 #else
 import Data.Word
 #endif
+#if __GLASGOW_HASKELL__ < 881
+import Control.Monad.Fail (MonadFail(..))
+#endif
 
 import Graphics.PDF.LowLevel.Types
 
@@ -98,7 +101,7 @@ size t
 lookup :: (MonadFail m) => Key a -> PDFTree a -> m a
 lookup k t = case lookup' k t of
     Just x -> return x
-    Nothing -> fail "Data.PDFTree.lookup: Key not found"
+    Nothing -> Control.Monad.Fail.fail "Data.PDFTree.lookup: Key not found"
 
 lookup' :: Key a -> PDFTree a -> Maybe a
 lookup' k t
@@ -201,6 +204,3 @@ fromList xs
   = foldlStrict ins empty xs
   where
     ins t (k,x)  = insert k x t
-    
-
-  
